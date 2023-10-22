@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/test1/add_normal.png</file>
+        <file>images/test1/add_pressed.png</file>
+        <file>images/test1/before_normal.png</file>
+        <file>images/test1/before_pressed.png</file>
+        <file>images/test1/delete_normal.png</file>
+        <file>images/test1/delete_pressed.png</file>
+        <file>images/test1/hide_normal.png</file>
+        <file>images/test1/hide_pressed.png</file>
+        <file>images/test1/list_normal.png</file>
+        <file>images/test1/list_pressed.png</file>
+        <file>images/test1/next_normal.png</file>
+        <file>images/test1/next_pressed.png</file>
+        <file>images/test1/play_normal.png</file>
+        <file>images/test1/play_pressed.png</file>
+        <file>images/test1/shunxu_normal.png</file>
+        <file>images/test1/shunxu_pressed.png</file>
+        <file>images/test1/stop_normal.png</file>
+        <file>images/test1/stop_pressed.png</file>
+        <file>images/test1/suiji_normal.png</file>
+        <file>images/test1/suiji_pressed.png</file>
+        <file>images/test1/voice_normal.png</file>
+        <file>images/test1/voice_pressed.png</file>
+        <file>images/kugou.png</file>
+        <file>images/mainwidget/manwei.png</file>
+        <file>images/mainwidget/wallhaven.png</file>
+        <file>mp3/test.mp3</file>
+    </qresource>
+</RCC>
