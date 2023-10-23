@@ -14,7 +14,7 @@ void BottomFrame::init()
 
     //设置底部固定高度
     setFixedHeight(120);
-    setStyleSheet(QString("QFrame{Background:rgb(255, 255, 255, 0);"
+    setStyleSheet(QString("QFrame{Background:rgba(255, 255, 255, 0);"
                           "background-color:rgba(0,0,0,0);"
                           "border-color:rgb(225,225,225);"
                           "border-width:0px;border-style: none;}"));    //solid

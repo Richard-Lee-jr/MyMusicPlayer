@@ -1,4 +1,5 @@
 ﻿#include "mainWidget.h"
+#include <QPalette>
 
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
@@ -7,9 +8,14 @@ MainWidget::MainWidget(QWidget *parent)
     resize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HERGHT);
     //设置主窗口名称
     setWindowTitle("KuGouMusicPlayer");
-    setStyleSheet("QFrame{Background:rgb(255, 255, 255, 0.5);border-color:rgb(225,225,225);border-width:0px;border-style: solid;}");
+    setStyleSheet("QFrame{background-color:rgb(161, 251, 142);border-color:rgb(161,251,142);border-width:0px;border-style: solid;}");
     //设置主窗口图标
     setWindowIcon(QIcon(MAINWIDGET_ICON));
+
+    //设置主窗口背景
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(161, 251, 142, 200));
+    setPalette(pal);
 
     topFrame = new TopFrame(this);
     btmFrame = new BottomFrame(this);
@@ -59,13 +65,13 @@ MainWidget::~MainWidget()
 void MainWidget::paintEvent(QPaintEvent *event)
 {
     //初始化画家并指定绘图设备
-    QPainter painter(this);
-    QImage Image;
-    Image.load(MAINWIDGET_BACKGROUND1);
-    QPixmap pixmap = QPixmap::fromImage(Image);
+    //QPainter painter(this);
+    //QImage Image;
+    //Image.load(MAINWIDGET_BACKGROUND1);
+    //QPixmap pixmap = QPixmap::fromImage(Image);
 
-    QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    //QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
     //QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
-    painter.drawPixmap(0, 0, fitpixmap);
+    //painter.drawPixmap(0, 0, fitpixmap);
 
 }

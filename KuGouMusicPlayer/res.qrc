@@ -26,5 +26,14 @@
         <file>images/mainwidget/manwei.png</file>
         <file>images/mainwidget/wallhaven.png</file>
         <file>mp3/test.mp3</file>
+        <file>images/test1/add_hover.png</file>
+        <file>images/test1/before_hover.png</file>
+        <file>images/test1/delete_hover.png</file>
+        <file>images/test1/hide_hover.png</file>
+        <file>images/test1/list_hover.png</file>
+        <file>images/test1/next_hover.png</file>
+        <file>images/test1/play_hover.png</file>
+        <file>images/test1/stop_hover.png</file>
+        <file>images/test1/voice_hover.png</file>
     </qresource>
 </RCC>

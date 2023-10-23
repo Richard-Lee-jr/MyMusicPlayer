@@ -21,8 +21,6 @@
 class BottomFrame : public QFrame
 {
     Q_OBJECT
-    //将TopFrame声明为自己的友元类，则在TopFrame类中可以使用本类BottomFrame的私有成员
-    //friend class TopFrame;
 
 public:
     explicit BottomFrame(QWidget *parent = nullptr);

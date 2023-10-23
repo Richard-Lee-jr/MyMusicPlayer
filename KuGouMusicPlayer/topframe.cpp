@@ -7,7 +7,7 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //设置固定宽度
     resize(1280, 660);
-    setStyleSheet(QString("QFrame{Background:rgb(255, 255, 255, 0);"    //第四个参数设置控件背景透明度， 0表示完全透明
+    setStyleSheet(QString("QFrame{Background:rgba(255, 255, 255, 0);"    //第四个参数设置控件背景透明度， 0表示完全透明
                           "background-color:rgba(0,0,0,0);"
                           "border-color:rgb(225,225,225);"
                           "border-width:0px;border-style: solid;}"));
