@@ -70,6 +70,11 @@ public slots:
 
     //移动滑动块，改变歌曲进度
     void updateMyPlayerPosition(int value);
+    void slotSongSliderPressed();
+    void slotSongSliderMoved();
+    void slotSongSliderActionTrigged();
+
+    void slotVoiceClicked();
 
     //响应TopFrame中add按钮按下信号（即自定义信号addClicked(QString)）的槽函数
     void getAddClicked(QString songPath = "");
@@ -105,24 +110,17 @@ private:
     MyScrollLabel* scrollText;
 
     //上一曲
-    //QPushButton* pre;
     //使用自定义按钮
     MyButton * pre;
     //播放
-    //QPushButton* play;
     MyButton* play;
     //下一曲
-    //QPushButton* next;
     MyButton* next;
     //音量
-    //QPushButton* voice;
     MyButton* voice;
     //音乐列表
-    //QPushButton* list;
     MyButton* list;
 
-    //需要一个画家
-    //QPainter* btmPainter;
     //音频播放列表
     QMediaPlaylist* mdPlayList;
     QMediaPlayer* my_player;

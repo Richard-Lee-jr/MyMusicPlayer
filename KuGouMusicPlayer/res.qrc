@@ -35,5 +35,8 @@
         <file>images/test1/play_hover.png</file>
         <file>images/test1/stop_hover.png</file>
         <file>images/test1/voice_hover.png</file>
+        <file>images/test1/voice_off_hover.png</file>
+        <file>images/test1/voice_off_normal.png</file>
+        <file>images/test1/voice_off_pressed.png</file>
     </qresource>
 </RCC>

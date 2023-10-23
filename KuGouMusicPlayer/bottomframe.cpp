@@ -65,7 +65,7 @@ void BottomFrame::init()
 
 
     //上一曲
-    pre = new MyButton(BEFORE_IMAGE_PATH, BEFORE_PRESSED_IMAGE_PATH);
+    pre = new MyButton(BEFORE_IMAGE_PATH, BEFORE_HOVER_IMAGE_PATH, BEFORE_PRESSED_IMAGE_PATH);
     pre->setParent(this);
     pre->setToolTip("上一曲");
 
@@ -85,22 +85,22 @@ void BottomFrame::init()
 
 
     //播放
-    play = new MyButton(PLAY_IMAGE_PATH, PLAY_PRESSED_IMAGE_PATH);
+    play = new MyButton(PLAY_IMAGE_PATH, PLAY_HOVER_IMAGE_PATH, PLAY_PRESSED_IMAGE_PATH);
     play->setParent(this);
     play->setToolTip("播放");
 
     //下一曲
-    next = new MyButton(NEXT_IMAGE_PATH, NEXT_PRESSED_IMAGE_PATH);
+    next = new MyButton(NEXT_IMAGE_PATH, NEXT_HOVER_IMAGE_PATH, NEXT_PRESSED_IMAGE_PATH);
     next->setParent(this);
     next->setToolTip("下一曲");
 
     //音量
-    voice = new MyButton(VOICE_IMAGE_PATH, VOICE_PRESSED_IMAGE_PATH);
+    voice = new MyButton(VOICE_IMAGE_PATH, VOICE_HOVER_IMAGE_PATH, VOICE_PRESSED_IMAGE_PATH);
     voice->setParent(this);
     voice->setToolTip("音量");
 
     //音乐列表
-    list = new MyButton(LIST_IMAGE_PATH, LIST_PRESSED_IMAGE_PATH);
+    list = new MyButton(LIST_IMAGE_PATH, LIST_HOVER_IMAGE_PATH, LIST_PRESSED_IMAGE_PATH);
     list->setParent(this);
     list->setToolTip("列表");
 
@@ -156,8 +156,15 @@ void BottomFrame::init()
 
     //切换歌曲时,进度条总长度随歌曲总时长改变
     connect(my_player, &QMediaPlayer::durationChanged, this, &BottomFrame::updateSongSliderDuration);
+
     //移动滑动块调整音乐进度, 会有卡顿. 所以这里使用slideerMoved信号而不是valueChanged信号
     connect(songSlider, &QSlider::sliderMoved, this, &BottomFrame::updateMyPlayerPosition);
+    connect(songSlider, &QSlider::sliderPressed, this, &BottomFrame::slotSongSliderPressed);
+    connect(songSlider, &QSlider::sliderMoved, this, &BottomFrame::slotSongSliderMoved);
+    connect(songSlider, &QSlider::actionTriggered, this, &BottomFrame::slotSongSliderActionTrigged);
+
+    //voice
+    connect(voice, &QPushButton::clicked, this, &BottomFrame::slotVoiceClicked);
 
     //音量滑动块生改变时，my_player音量随之改变
     connect(voiceSlider, &QSlider::valueChanged, [&](){
@@ -278,7 +285,15 @@ void BottomFrame::updateSongSliderPosition(qint64 position)
 
 //移动滑动块，改变歌曲进度
 void BottomFrame::updateMyPlayerPosition(int value)
-{//前面设置了setRange(0,duration)，所以得到的value是ms，毫秒
+{
+    QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
+    if (sts == QMediaPlayer::NoMedia)
+    {
+        songSlider->setValue(0);
+        qDebug() << "当前没有播放歌曲，无法移动进度！";
+        return;
+    }
+    //前面设置了setRange(0,duration)，所以得到的value是ms，毫秒
     //防止卡顿先暂停歌曲
     my_player->pause();
     //setPosition(), 设置当前播放位置
@@ -292,6 +307,56 @@ void BottomFrame::updateMyPlayerPosition(int value)
     songTime->setText(curPostion + "/" + duration);
     //设置完后继续播放
     my_player->play();
+}
+
+void BottomFrame::slotSongSliderPressed()
+{
+    qDebug() << "BottomFrame::SlotSongSliderPressed()";
+    QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
+    if (sts == QMediaPlayer::NoMedia)
+    {
+        songSlider->setValue(0);
+        qDebug() << "当前没有播放歌曲，无法移动进度！";
+        return;
+    }
+}
+
+void BottomFrame::slotSongSliderMoved()
+{
+    QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
+    if (sts == QMediaPlayer::NoMedia)
+    {
+        songSlider->setValue(0);
+        qDebug() << "当前没有播放歌曲，无法移动进度！";
+        return;
+    }
+}
+
+void BottomFrame::slotSongSliderActionTrigged()
+{
+    qDebug() << "BottomFrame::SlotSongSliderActionTrigged()";
+    QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
+    if (sts == QMediaPlayer::NoMedia)
+    {
+        songSlider->setValue(0);
+        qDebug() << "当前没有播放歌曲，无法移动进度！";
+        return;
+    }
+}
+
+void BottomFrame::slotVoiceClicked()
+{
+    int nCurValue = voiceSlider->value();
+    if (nCurValue == 0)
+    {
+        voice->updateBtnImg(VOICE_IMAGE_PATH, VOICE_HOVER_IMAGE_PATH, VOICE_PRESSED_IMAGE_PATH);
+        voiceSlider->setValue(50);
+    }
+    else
+    {
+        voice->updateBtnImg(VOICE_OFF_IMAGE_PATH, VOICE_OFF_HOVER_IMAGE_PATH, VOICE_OFF_PRESSED_IMAGE_PATH);
+        voiceSlider->setValue(0);
+    }
 }
 
 //接收TopFrame中add按钮按下信号的槽函数
@@ -320,7 +385,8 @@ void BottomFrame::getItemDoubleClicked(int index, const QString& text)
     //如果当前播播放状态为未播放，下一曲后设置播放按钮图标
     if (my_player->state() == 0 || my_player->state() == 2)
     {
-        play->setIcon(QIcon(STOP_PRESSED_IMAGE_PATH));      //emit
+
+        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
         play->setIconSize(play->size());
     }
     //设置当前播放歌曲名
@@ -338,7 +404,14 @@ void BottomFrame::getItemDoubleClicked(int index, const QString& text)
 void BottomFrame::getPreClicked()
 {
     //得到当前列表歌曲数量
-    //int songNum = mdPlayList->mediaCount();
+    int songNum = mdPlayList->mediaCount();
+
+    if (songNum == 0)
+    {
+        qDebug() << "歌曲列表为空，请添加歌曲！";
+        return;
+    }
+
     //得到当前播放歌曲索引
     int curIndex = mdPlayList->currentIndex();
     //判断当前播放歌曲是否是第一首
@@ -355,9 +428,8 @@ void BottomFrame::getPreClicked()
     if (my_player->state() == 0 || my_player->state() == 2)
     {
         //qDebug() << "something";
-        play->setIcon(QIcon(STOP_PRESSED_IMAGE_PATH));      //emit
+        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
         play->setIconSize(play->size());
-        //play->setToolTip("暂停");
     }
 
 
@@ -382,19 +454,15 @@ void BottomFrame::getPlayOrPauseClicked()
     //qDebug() << my_player->bufferStatus();
     if (my_player->state() == 0 || my_player->state() == 2)    //播放停止状态 或 播放暂停状态
     {
-        play->setIcon(QIcon(STOP_IMAGE_PATH));
-        play->setIconSize(play->size());
+        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
         play->setToolTip("播放");
-        //qDebug() << my_player->position();
-        //my_player->setPosition(my_player->position());
         my_player->play();
         //更新歌曲信息
         emit BottomFrame::updateSongInfo(mdPlayList->currentIndex());
     }
     else if (my_player->state() == 1)   //播放状态
     {
-        play->setIcon(QIcon(PLAY_PRESSED_IMAGE_PATH));
-        play->setIconSize(play->size());
+        play->updateBtnImg(PLAY_IMAGE_PATH, PLAY_HOVER_IMAGE_PATH, PLAY_PRESSED_IMAGE_PATH);
         play->setToolTip("暂停");
         my_player->pause();
     }
@@ -406,6 +474,13 @@ void BottomFrame::getNextClicked()
 {
     //获取当前list歌曲数量
     int songNum = mdPlayList->mediaCount();
+
+    if (songNum == 0)
+    {
+        qDebug() << "播放列表为空，请添加歌曲！";
+        return;
+    }
+
     //获得当前播放歌曲索引
     int curIndex = mdPlayList->currentIndex();
     //判断当前播放歌曲是否是最后一首
@@ -423,10 +498,10 @@ void BottomFrame::getNextClicked()
     //如果当前播播放状态为未播放，下一曲后设置播放按钮图标
     if (my_player->state() == 0 || my_player->state() == 2)
     {
-        play->setIcon(QIcon(STOP_IMAGE_PATH));
+        //play->setIcon(QIcon(STOP_IMAGE_PATH));
+        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
         play->setIconSize(play->size());
     }
-
 
     //播放当前音乐
     my_player->play();

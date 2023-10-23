@@ -55,19 +55,19 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //右侧框架里的控件
     //添加按钮
-    add = new MyButton(ADD_NORMAL_PATH, ADD_PRESSED_PATH);
+    add = new MyButton(ADD_NORMAL_PATH, ADD_HOVER_PATH, ADD_PRESSED_PATH);
     add->setParent(listFrame);
     //add->setText("添加歌曲");
 
 
     //删除按钮
-    del = new MyButton(DELETE_NORMAL_PATH, DELETE_PRESSED_PATH);
+    del = new MyButton(DELETE_NORMAL_PATH, DELETE_HOVER_PATH, DELETE_PRESSED_PATH);
     del->setParent(listFrame);
     //del->setText("删除歌曲");
 
 
     //隐藏按钮
-    hide = new MyButton(HIDE_NORMAL_PATH, HIDE_PRESSED_PATH);
+    hide = new MyButton(HIDE_NORMAL_PATH, HIDE_HOVER_PATH, HIDE_PRESSED_PATH);
     hide->setParent(listFrame);
     //hide->setText("隐藏");
 
