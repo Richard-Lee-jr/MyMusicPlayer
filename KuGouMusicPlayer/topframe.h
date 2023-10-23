@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QLabel>
+#include <QTextBrowser>
 #include <QListWidget>
 #include <QFileDialog>
 #include <QFont>
@@ -81,7 +82,7 @@ private:
 
     //左侧框架里的控件
     //歌词控件
-    QLabel* lyrics;
+    QTextBrowser* lyrics;
 
 
     //右侧框架里的控件

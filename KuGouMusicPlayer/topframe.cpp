@@ -1,4 +1,6 @@
 ﻿#include "topframe.h"
+#include <QFile>
+#include <QTextStream>
 
 TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 {
@@ -37,9 +39,28 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //左侧框架里的控件
     //歌词控件
-    lyrics = new QLabel("暂无歌词", lyricFrame);
+    lyrics = new QTextBrowser(lyricFrame);
     lyrics->setFont(f);
-    //lyrics->move((lyricFrame->width() - lyrics->width()) / 2, (lyricFrame->height() - lyrics->height()) / 2);
+    lyrics->setStyleSheet(sliderStyle);
+    lyrics->style()->polish(lyrics->verticalScrollBar());
+
+    QFile file("../KuGouMusicPlayer/lyrics/将故事写成我们.txt");         //D:/QtApplication/MyMusicPlayer/MyMusicPlayer/KuGouMusicPlayer/lyrics/将故事写成我们.txt
+    if ( !file.open(QFile::ReadOnly) )
+    {
+        qDebug() << "Failed to open lyrics!";
+    }
+    else
+    {
+        QTextStream txtStm(&file);
+        txtStm.setCodec("UTF-8");
+        while (!txtStm.atEnd())
+        {
+            QString qsLine = txtStm.readLine();
+            qDebug() << qsLine;
+            lyrics->append(qsLine);
+        }
+        file.close();
+    }
 
 
     //右侧框架
@@ -176,7 +197,15 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 //接收ButtomFrame中list按钮点击信号的槽函数
 void TopFrame::getListClicked(bool checked)
 {
-    listFrame->show();
+    if (listFrame->isHidden())
+    {
+        listFrame->show();
+    }
+    else
+    {
+        listFrame->hide();
+    }
+
 }
 
 

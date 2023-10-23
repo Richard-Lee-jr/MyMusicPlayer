@@ -260,7 +260,7 @@ QString BottomFrame::getSongTime(qint64 time)
 void BottomFrame::updateSongSliderDuration(qint64 duration)
 {
     //测试：当前歌曲总时长
-    //qDebug() << "歌曲总时长：" << duration;
+    qDebug() << "歌曲总时长：" << duration;
     //更改进度条
     songSlider->setRange(0,duration);//根据播放时长来设置滑块的范围
     songSlider->setEnabled(duration>0);

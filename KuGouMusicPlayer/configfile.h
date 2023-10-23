@@ -79,6 +79,15 @@ const qint32 BUTTON_HEIGHT48 = 48;
 
 
 //自定义滑动块风格
+const QString sliderStyle =
+                                "QScrollBar:vertical"
+                                "{"
+                                "border: none;"
+                                "background: transparent;"
+                                "width: 0px;"
+                                "}";
+
+
 //QListWidget中的滑动条
 const QString songListSliderStyle = "QSlider::groove:horizontal {"
                                  "border: 1px solid #bbb;"
