@@ -42,6 +42,9 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(btmFrame, &BottomFrame::updateSongInfo, topFrame, &TopFrame::getSongInfo);
 
+    //同步歌词
+    connect(btmFrame, &BottomFrame::signalUpdateLyrics, topFrame, &TopFrame::slotUpdateLyric);
+
 
     //主框架
     //mainFrame = new QFrame(this);

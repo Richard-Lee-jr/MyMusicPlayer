@@ -281,6 +281,9 @@ void BottomFrame::updateSongSliderPosition(qint64 position)
     QString duration = getSongTime(my_player->duration());
     //更新底部时长按钮文本
     songTime->setText(curPostion + "/" + duration);
+
+    //同时通知mainWidget同步更新topframe中的歌词
+    emit signalUpdateLyrics(position);
 }
 
 //移动滑动块，改变歌曲进度

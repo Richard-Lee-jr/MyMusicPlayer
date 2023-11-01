@@ -31,6 +31,7 @@ SOURCES += \
         main.cpp \
     bottomframe.cpp \
     mainWidget.cpp \
+    mlyricitem.cpp \
     topframe.cpp \
     mybutton.cpp \
     myscrolllabel.cpp
@@ -39,6 +40,7 @@ HEADERS += \
     mainWidget.h \
     bottomframe.h \
     configfile.h \
+    mlyricitem.h \
     topframe.h \
     mybutton.h \
     myscrolllabel.h

@@ -1,6 +1,10 @@
 ﻿#include "topframe.h"
 #include <QFile>
 #include <QTextStream>
+#include <QTextCursor>
+#include <QTextBlock>
+
+#include "mlyricitem.h"
 
 TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 {
@@ -22,7 +26,10 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
     //字体大小
     f.setPointSize(20);
     //字体下划线
-    f.setUnderline(true);
+    //f.setUnderline(true);
+
+    curPos = 0;
+
 
 
 /*****************这里是类成员初始化**************************************/
@@ -39,28 +46,58 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //左侧框架里的控件
     //歌词控件
-    lyrics = new QTextBrowser(lyricFrame);
+    lyrics = new QListWidget(lyricFrame);
+    lyrics->setFixedSize(600, 660);
     lyrics->setFont(f);
+
     lyrics->setStyleSheet(sliderStyle);
     lyrics->style()->polish(lyrics->verticalScrollBar());
 
-    QFile file("../KuGouMusicPlayer/lyrics/将故事写成我们.txt");         //D:/QtApplication/MyMusicPlayer/MyMusicPlayer/KuGouMusicPlayer/lyrics/将故事写成我们.txt
-    if ( !file.open(QFile::ReadOnly) )
-    {
-        qDebug() << "Failed to open lyrics!";
-    }
-    else
-    {
-        QTextStream txtStm(&file);
-        txtStm.setCodec("UTF-8");
-        while (!txtStm.atEnd())
-        {
-            QString qsLine = txtStm.readLine();
-            qDebug() << qsLine;
-            lyrics->append(qsLine);
-        }
-        file.close();
-    }
+
+//    QFile file("../KuGouMusicPlayer/lyrics/周杰伦-爷爷泡的茶.lrc");         //D:/QtApplication/MyMusicPlayer/MyMusicPlayer/KuGouMusicPlayer/lyrics/将故事写成我们.txt
+//    if ( !file.open(QFile::ReadOnly) )
+//    {
+//        qDebug() << "Failed to open lyrics!";
+//    }
+//    else
+//    {
+//        QTextStream txtStm(&file);
+//        txtStm.setCodec("UTF-8");
+
+
+//        while (!txtStm.atEnd())
+//        {
+//            QString qsLine = txtStm.readLine();
+
+//            if (qsLine.isEmpty())
+//            {
+//                continue;
+//            }
+
+//            QStringList list = qsLine.split(']');
+//            QString time,content;
+//            time = list.at(0);
+//            time = time.right(time.length()-1);
+//            content = list.at(1);
+//            content = content.left(content.length());
+//            int l = time.indexOf(':');
+//            int r = time.lastIndexOf('.');
+//            QString min = time.left(l);
+//            QString sec = time.mid(l+1,r-l-1);
+//            QString ms = time.right(time.length()-r-1);
+//            int t = min.toInt()*60*1000+sec.toInt()*1000+ms.toInt();
+//            lyricMap.insert(t,content);
+
+//            qDebug() << "time: " << t << ", content: " << content;
+//            MLyricItem* lyricLine = new MLyricItem(content);
+//            lyrics->addItem(lyricLine);
+//        }
+//        file.close();
+//    }
+
+//    lyrics->setCurrentRow(40);
+//    QListWidgetItem * curItem = lyrics->currentItem();
+//    lyrics->scrollToItem(curItem, QAbstractItemView::PositionAtCenter);
 
 
     //右侧框架
@@ -94,10 +131,8 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //歌曲列表控件
     songList = new QListWidget(listFrame);
-    f.setPointSize(11);
     songList->setFont(f);
-    //songList->addItem(QString("test"));
-    songList->resize(300, 600);
+    //songList->resize(300, 600);
     //歌曲列表滑动块风格
     songList->verticalScrollBar()->setStyleSheet(songListSliderStyle);
     songList->horizontalScrollBar()->setStyleSheet(songListSliderStyle);
@@ -252,4 +287,23 @@ void TopFrame::getSongInfo(int index)
     QListWidgetItem* Item = songList->item(index);
     //通过手动触发自定义信号来更改当前播放歌曲名, 在mainWidget中接收
     emit updateSongName(index, Item->text());
+}
+
+void TopFrame::slotUpdateLyric(qint64 position)
+{
+    qDebug() << "TopFrame::slotUpdateLyric: " << position;
+//    QMap<int,QString>::const_iterator it = lyricMap.upperBound(position);
+
+//    if (it.key() > position - 1000 && it.key() < position + 1000)
+//    {
+//        curPos++;
+//        QTextCursor tc = lyrics->textCursor();
+//        int pos = lyrics->document()->findBlockByNumber(curPos).position();
+//        tc.setPosition(pos, QTextCursor::MoveAnchor);
+//        tc.movePosition(QTextCursor::StartOfBlock);
+//        lyrics->setTextCursor(tc);
+
+//        lyrics->toPlainText();
+//    }
+
 }

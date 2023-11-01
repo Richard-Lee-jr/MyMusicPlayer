@@ -15,6 +15,9 @@
 #include <QVBoxLayout>
 #include <QGridLayout>      //网格布局
 #include <QDebug>
+#include <QMap>
+#include <QPlainTextEdit>
+#include <QListWidget>
 #include "configfile.h"
 #include "mybutton.h"
 
@@ -59,6 +62,8 @@ public slots:
 
     void getSongInfo(int index);
 
+    void slotUpdateLyric(qint64 position);
+
 private:
     //topFrame总体水平布局
     QHBoxLayout* topHlayout;
@@ -82,7 +87,7 @@ private:
 
     //左侧框架里的控件
     //歌词控件
-    QTextBrowser* lyrics;
+    QListWidget* lyrics;
 
 
     //右侧框架里的控件
@@ -95,6 +100,8 @@ private:
     //隐藏按钮
     MyButton* hide;
 
+    QMap<int, QString> lyricMap;
+    int curPos;
 
 };
 

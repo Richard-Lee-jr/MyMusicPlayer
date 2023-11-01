@@ -60,6 +60,8 @@ signals:
     //更新歌曲信息信号
     void updateSongInfo(int index);
 
+    void signalUpdateLyrics(qint64 position);
+
 public slots:
     //移动播放进度条触发的槽函数
     //更新歌曲播放时间
