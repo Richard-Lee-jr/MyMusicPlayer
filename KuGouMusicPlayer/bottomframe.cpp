@@ -36,7 +36,7 @@ void BottomFrame::init()
     mdPlayList = new QMediaPlaylist(this);
     //mdPlayList->addMedia(QUrl::fromLocalFile("D:\\QTapplication\\KuGouMusicPlayer\\mp3\\yequ.mp3"));
     //设置播放模式(顺序播放，单曲循环，随机播放等)
-    mdPlayList->setPlaybackMode(QMediaPlaylist::Loop);
+    mdPlayList->setPlaybackMode(QMediaPlaylist::Sequential);
     //playlist->setCurrentIndex(1);
 
     my_player = new QMediaPlayer(this);
@@ -173,6 +173,7 @@ void BottomFrame::init()
 
     //播放完毕自动切换下一首
     connect(my_player, &QMediaPlayer::mediaChanged, this, [&]{
+        qDebug() << "emit BottomFrame::nextClickedSignal";
         emit BottomFrame::nextClickedSignal(mdPlayList->currentIndex());
     });
 
@@ -260,7 +261,7 @@ QString BottomFrame::getSongTime(qint64 time)
 void BottomFrame::updateSongSliderDuration(qint64 duration)
 {
     //测试：当前歌曲总时长
-    qDebug() << "歌曲总时长：" << duration;
+    qDebug() << "BottomFrame::updateSongSliderDuration--歌曲总时长：" << duration;
     //更改进度条
     songSlider->setRange(0,duration);//根据播放时长来设置滑块的范围
     songSlider->setEnabled(duration>0);
@@ -268,12 +269,19 @@ void BottomFrame::updateSongSliderDuration(qint64 duration)
 
     //更改底部时长按钮的内容QString songTime
     songTime->setText("00:00/" + getSongTime(duration));
-
+    emit signalDurationChanged(duration);
 }
 
 //接收歌曲位置改变，那么滑块的位置也要变
 void BottomFrame::updateSongSliderPosition(qint64 position)
 {
+    if (my_player->mediaStatus() == QMediaPlayer::EndOfMedia)
+    {
+        qDebug() << u8"音乐播放完毕";
+        qDebug() << my_player->state();
+        UpdatePlayState();
+    }
+
     songSlider->setValue(position);
     //显示当前时间进度songTime
     QString curPostion = getSongTime(position);
@@ -314,7 +322,7 @@ void BottomFrame::updateMyPlayerPosition(int value)
 
 void BottomFrame::slotSongSliderPressed()
 {
-    qDebug() << "BottomFrame::SlotSongSliderPressed()";
+    //qDebug() << "BottomFrame::SlotSongSliderPressed()";
     QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
     if (sts == QMediaPlayer::NoMedia)
     {
@@ -337,7 +345,7 @@ void BottomFrame::slotSongSliderMoved()
 
 void BottomFrame::slotSongSliderActionTrigged()
 {
-    qDebug() << "BottomFrame::SlotSongSliderActionTrigged()";
+    //qDebug() << "BottomFrame::SlotSongSliderActionTrigged()";
     QMediaPlayer::MediaStatus sts = my_player->mediaStatus();
     if (sts == QMediaPlayer::NoMedia)
     {
@@ -455,20 +463,7 @@ void BottomFrame::getPlayOrPauseClicked()
     //测试：歌曲长度
     //qDebug() << my_player->duration();
     //qDebug() << my_player->bufferStatus();
-    if (my_player->state() == 0 || my_player->state() == 2)    //播放停止状态 或 播放暂停状态
-    {
-        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
-        play->setToolTip("播放");
-        my_player->play();
-        //更新歌曲信息
-        emit BottomFrame::updateSongInfo(mdPlayList->currentIndex());
-    }
-    else if (my_player->state() == 1)   //播放状态
-    {
-        play->updateBtnImg(PLAY_IMAGE_PATH, PLAY_HOVER_IMAGE_PATH, PLAY_PRESSED_IMAGE_PATH);
-        play->setToolTip("暂停");
-        my_player->pause();
-    }
+    UpdatePlayState();
 
 }
 
@@ -514,3 +509,21 @@ void BottomFrame::getNextClicked()
     emit BottomFrame::nextClickedSignal(curIndex);
 }
 //111
+
+void BottomFrame::UpdatePlayState()
+{
+    if (my_player->state() == QMediaPlayer::StoppedState || my_player->state() == QMediaPlayer::PausedState)    //播放停止状态 或 播放暂停状态
+    {
+        play->updateBtnImg(STOP_IMAGE_PATH, STOP_HOVER_IMAGE_PATH, STOP_PRESSED_IMAGE_PATH);
+        play->setToolTip("播放");
+        my_player->play();
+        //更新歌曲信息
+        emit BottomFrame::updateSongInfo(mdPlayList->currentIndex());
+    }
+    else if (my_player->state() == QMediaPlayer::PlayingState)   //播放状态
+    {
+        play->updateBtnImg(PLAY_IMAGE_PATH, PLAY_HOVER_IMAGE_PATH, PLAY_PRESSED_IMAGE_PATH);
+        play->setToolTip("暂停");
+        my_player->pause();
+    }
+}

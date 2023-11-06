@@ -40,6 +40,8 @@ public:
     //触发自定义信号函数
     void emitPlayOverSignal();
 
+    void UpdatePlayState();
+
 protected:
     //重写绘图事件
     //void paintEvent(QPaintEvent *);
@@ -61,6 +63,8 @@ signals:
     void updateSongInfo(int index);
 
     void signalUpdateLyrics(qint64 position);
+
+    void signalDurationChanged(qint64 duration);
 
 public slots:
     //移动播放进度条触发的槽函数

@@ -10,6 +10,7 @@
 #include <QLabel>
 
 #include "mlyricitem.h"
+#include "mlyriclabel.h"
 
 TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 {
@@ -88,22 +89,26 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //歌曲列表控件
     songList = new QListWidget(listFrame);
-    songList->setFont(f);
+    songList->setFont(QFont("FangSong", 16));
     //songList->resize(300, 600);
     //歌曲列表滑动块风格
     songList->verticalScrollBar()->setStyleSheet(songListSliderStyle);
     songList->horizontalScrollBar()->setStyleSheet(songListSliderStyle);
 
     //添加完成后默认隐藏歌曲列表
-    listFrame->hide();
+    //listFrame->hide();
 
 
 
 /********************下面将控件添加到对应布局中区*****************************/
     //添加到歌词框架布局中去
-    //lyricHlayout->addStretch(1);
-    //lyricHlayout->addWidget(lyrics);
-    //lyricHlayout->addStretch(1);
+    lyricHlayout->addStretch(1);
+    MLyricLabel* label = new MLyricLabel(this);
+    label->setText(tr("将故事写成我们"));
+    //label->setSelection(0, label->text().length());
+    //qDebug() << "select text: " << label->selectedText();
+    lyricHlayout->addWidget(label);
+    lyricHlayout->addStretch(1);
 
 
     //添加到右侧框架上半部分水平布局
@@ -124,7 +129,6 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
     //点击hide按钮隐藏歌曲列表songList
     connect(hide, &QPushButton::clicked, [&]{
         listFrame->hide();
-        //listVlayout->addStretch(2);
     });
 
     //点击添加歌曲按钮弹出文件手动添加, 得到歌曲路径并触发addClicked 自定义信号。该信号在BottomFrame中被接收
@@ -132,7 +136,7 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
         //添加多个音频文件
         //参数：父对象， 浮动框标题，默认打开路径， 过滤器
-        QStringList songListPath = QFileDialog::getOpenFileNames(this,QString::fromLocal8Bit("文件"), "D:\\music"); // QString::fromLocal8Bit("音频文件(*.mp3")
+        QStringList songListPath = QFileDialog::getOpenFileNames(this,QString::fromLocal8Bit("文件"), "."); // QString::fromLocal8Bit("音频文件(*.mp3")
         if (!songListPath.isEmpty())
         {
             for (int i = 0; i < songListPath.size(); i++)
@@ -236,6 +240,9 @@ void TopFrame::getNextClicked(int index)
     //将该item设置为当前item
     songList->setCurrentItem(Item);
 
+    qDebug() << "TopFrame::getNextClicked--name: " << Item->text();
+    updateLyricFrame(Item->text());
+
     //通过手动触发自定义信号来更改当前播放歌曲名, 在mainWidget中接收
     emit updateSongName(index, Item->text());
 }
@@ -250,21 +257,34 @@ void TopFrame::getSongInfo(int index)
 
 void TopFrame::slotUpdateLyric(qint64 position)
 {
-    qDebug() << "TopFrame::slotUpdateLyric: " << position;
-//    QMap<int,QString>::const_iterator it = lyricMap.upperBound(position);
+    //qDebug() << "TopFrame::slotUpdateLyric: " << position;
+    QMap<int,QString>::const_iterator it = lyricMap.upperBound(position);
+    if (it.key() > position - 1000 && it.key() < position + 1000)
+    {
+        curPos++;
+        lyricWidget->setCurrentRow(curPos);
+        QListWidgetItem* curItem = lyricWidget->currentItem();
+        lyricWidget->scrollToItem(curItem, QAbstractItemView::PositionAtCenter);    //QAbstractItemView::EnsureVisible QAbstractItemView::PositionAtCenter
+    }
+
 
 //    if (it.key() > position - 1000 && it.key() < position + 1000)
 //    {
 //        curPos++;
-//        QTextCursor tc = lyrics->textCursor();
-//        int pos = lyrics->document()->findBlockByNumber(curPos).position();
+//        QTextCursor tc = lyricWidget->textCursor();
+//        int pos = lyricWidget->document()->findBlockByNumber(curPos).position();
 //        tc.setPosition(pos, QTextCursor::MoveAnchor);
 //        tc.movePosition(QTextCursor::StartOfBlock);
-//        lyrics->setTextCursor(tc);
+//        lyricWidget->setTextCursor(tc);
 
-//        lyrics->toPlainText();
+//        lyricWidget->toPlainText();
 //    }
 
+}
+
+void TopFrame::slotDurationChanged(qint64 duration)
+{
+    qDebug() << "TopFrame::slotDurationChanged--duration: " << duration;
 }
 
 void TopFrame::updateLyricFrame(const QString& name)
@@ -336,8 +356,8 @@ void TopFrame::updateLyricFrame(const QString& name)
         else
         {
             //lyricMap
-            QListWidget* lyricWidget = new QListWidget(lyricFrame);
-            lyricWidget->setFixedSize(600, 660);
+            lyricWidget = new QListWidget(lyricFrame);
+
             lyricWidget->setFont(font);
             lyricWidget->setStyleSheet(sliderStyle);
             lyricWidget->style()->polish(lyricWidget->horizontalScrollBar());
@@ -346,13 +366,14 @@ void TopFrame::updateLyricFrame(const QString& name)
             for (QMap<int, QString>::iterator it = lyricMap.begin(); it != lyricMap.end(); it++)
             {
                 MLyricItem* lyricItem = new MLyricItem(it.value());
-                //lyricItem->setFont(QFont("FangSong", 20));
                 lyricWidget->addItem(lyricItem);
             }
 
-            lyricHlayout->addStretch(1);
+            lyricWidget->setCurrentRow(curPos);
+
+            lyricHlayout->addStretch();
             lyricHlayout->addWidget(lyricWidget);
-            lyricHlayout->addStretch(1);
+            lyricHlayout->addStretch();
 
             return;
         }
@@ -406,6 +427,12 @@ bool TopFrame::loadLyric(const QString& fullPath)
             QString sec = time.mid(l+1,r-l-1);
             QString ms = time.right(time.length()-r-1);
             int t = min.toInt()*60*1000+sec.toInt()*1000+ms.toInt();
+
+            if (t < 0 || content.isEmpty())
+            {
+                continue;
+            }
+
             lyricMap.insert(t,content);
 
             qDebug() << "time: " << t << ", content: " << content;

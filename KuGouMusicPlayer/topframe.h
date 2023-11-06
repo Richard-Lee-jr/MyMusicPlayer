@@ -68,6 +68,8 @@ public slots:
 
     void slotUpdateLyric(qint64 position);
 
+    void slotDurationChanged(qint64 duration);
+
 private:
     //topFrame总体水平布局
     QHBoxLayout* topHlayout;
@@ -92,6 +94,7 @@ private:
     //左侧框架里的控件
     //歌词控件
     //QListWidget* lyrics;
+    QListWidget* lyricWidget;
 
 
     //右侧框架里的控件
