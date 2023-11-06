@@ -7,5 +7,7 @@ int main(int argc, char *argv[])
     MainWidget w;
     w.show();
 
+    //Celebrate
+
     return a.exec();
 }

@@ -19,56 +19,56 @@ const QString MAINWIDGET_BACKGROUND2 = ":/images/mainwidget/manwei.png";
 
 /**************顶部控件资源配置***************************/
 //相对路径
-const QString ADD_NORMAL_PATH = ":/images/test1/add_normal.png";
-const QString ADD_HOVER_PATH = ":/images/test1/add_hover.png";
-const QString ADD_PRESSED_PATH = ":/images/test1/add_pressed.png";
+const QString ADD_NORMAL_PATH = ":/images/icon/add_normal.png";
+const QString ADD_HOVER_PATH = ":/images/icon/add_hover.png";
+const QString ADD_PRESSED_PATH = ":/images/icon/add_pressed.png";
 
-const QString DELETE_NORMAL_PATH = ":/images/test1/delete_normal.png";
-const QString DELETE_HOVER_PATH = ":/images/test1/delete_hover.png";
-const QString DELETE_PRESSED_PATH = ":/images/test1/delete_pressed.png";
+const QString DELETE_NORMAL_PATH = ":/images/icon/delete_normal.png";
+const QString DELETE_HOVER_PATH = ":/images/icon/delete_hover.png";
+const QString DELETE_PRESSED_PATH = ":/images/icon/delete_pressed.png";
 
-const QString HIDE_NORMAL_PATH = ":/images/test1/hide_normal.png";
-const QString HIDE_HOVER_PATH = ":/images/test1/hide_hover.png";
-const QString HIDE_PRESSED_PATH = ":/images/test1/hide_pressed.png";
+const QString HIDE_NORMAL_PATH = ":/images/icon/hide_normal.png";
+const QString HIDE_HOVER_PATH = ":/images/icon/hide_hover.png";
+const QString HIDE_PRESSED_PATH = ":/images/icon/hide_pressed.png";
 
 
 /************底部控件资源配置***************************/
 //相对路径
-const QString PLAY_IMAGE_PATH = ":/images/test1/play_normal.png";
-const QString PLAY_HOVER_IMAGE_PATH = ":/images/test1/play_hover.png";
-const QString PLAY_PRESSED_IMAGE_PATH = ":/images/test1/play_pressed.png";
+const QString PLAY_IMAGE_PATH = ":/images/icon/play_normal.png";
+const QString PLAY_HOVER_IMAGE_PATH = ":/images/icon/play_hover.png";
+const QString PLAY_PRESSED_IMAGE_PATH = ":/images/icon/play_pressed.png";
 
-const QString STOP_IMAGE_PATH = ":/images/test1/stop_normal.png";
-const QString STOP_HOVER_IMAGE_PATH = ":/images/test1/stop_hover.png";
-const QString STOP_PRESSED_IMAGE_PATH = ":/images/test1/stop_pressed.png";
+const QString STOP_IMAGE_PATH = ":/images/icon/stop_normal.png";
+const QString STOP_HOVER_IMAGE_PATH = ":/images/icon/stop_hover.png";
+const QString STOP_PRESSED_IMAGE_PATH = ":/images/icon/stop_pressed.png";
 
-const QString BEFORE_IMAGE_PATH = ":/images/test1/before_normal.png";
-const QString BEFORE_HOVER_IMAGE_PATH = ":/images/test1/before_hover.png";
-const QString BEFORE_PRESSED_IMAGE_PATH = ":/images/test1/before_pressed.png";
+const QString BEFORE_IMAGE_PATH = ":/images/icon/before_normal.png";
+const QString BEFORE_HOVER_IMAGE_PATH = ":/images/icon/before_hover.png";
+const QString BEFORE_PRESSED_IMAGE_PATH = ":/images/icon/before_pressed.png";
 
-const QString NEXT_IMAGE_PATH = ":/images/test1/next_normal.png";
-const QString NEXT_HOVER_IMAGE_PATH = ":/images/test1/next_hover.png";
-const QString NEXT_PRESSED_IMAGE_PATH = ":/images/test1/next_pressed.png";
+const QString NEXT_IMAGE_PATH = ":/images/icon/next_normal.png";
+const QString NEXT_HOVER_IMAGE_PATH = ":/images/icon/next_hover.png";
+const QString NEXT_PRESSED_IMAGE_PATH = ":/images/icon/next_pressed.png";
 
-const QString VOICE_IMAGE_PATH = ":/images/test1/voice_normal.png";
-const QString VOICE_HOVER_IMAGE_PATH = ":/images/test1/voice_hover.png";
-const QString VOICE_PRESSED_IMAGE_PATH = ":/images/test1/voice_pressed.png";
+const QString VOICE_IMAGE_PATH = ":/images/icon/voice_normal.png";
+const QString VOICE_HOVER_IMAGE_PATH = ":/images/icon/voice_hover.png";
+const QString VOICE_PRESSED_IMAGE_PATH = ":/images/icon/voice_pressed.png";
 
-const QString VOICE_OFF_IMAGE_PATH = ":/images/test1/voice_off_normal.png";
-const QString VOICE_OFF_HOVER_IMAGE_PATH = ":/images/test1/voice_off_hover.png";
-const QString VOICE_OFF_PRESSED_IMAGE_PATH = ":/images/test1/voice_off_pressed.png";
+const QString VOICE_OFF_IMAGE_PATH = ":/images/icon/voice_off_normal.png";
+const QString VOICE_OFF_HOVER_IMAGE_PATH = ":/images/icon/voice_off_hover.png";
+const QString VOICE_OFF_PRESSED_IMAGE_PATH = ":/images/icon/voice_off_pressed.png";
 
-const QString LIST_IMAGE_PATH = ":/images/test1/list_normal.png";
-const QString LIST_HOVER_IMAGE_PATH = ":/images/test1/list_hover.png";
-const QString LIST_PRESSED_IMAGE_PATH = ":/images/test1/list_pressed.png";
+const QString LIST_IMAGE_PATH = ":/images/icon/list_normal.png";
+const QString LIST_HOVER_IMAGE_PATH = ":/images/icon/list_hover.png";
+const QString LIST_PRESSED_IMAGE_PATH = ":/images/icon/list_pressed.png";
 
-const QString SUIJU_IMAGE_PATH = ":/images/test1/suiji_normal.png";
-const QString SUIJU_HOVER_PATH = ":/images/test1/suiji_normal.png";
+const QString SUIJU_IMAGE_PATH = ":/images/icon/suiji_normal.png";
+const QString SUIJU_HOVER_PATH = ":/images/icon/suiji_normal.png";
 const QString SUIJU_PRESSED_IMAGE_PATH = ":/images/test1/suiji_pressed.png";
 
-const QString SHUNXU_IMAGE_PATH = ":/images/test1/shunxu_normal.png";
-const QString SHUNXU_HOVER_IMAGE_PATH = ":/images/test1/shunxu_hover.png";
-const QString SHUNXU_PRESSED_IMAGE_PATH = ":/images/test1/shunxu_pressed.png";
+const QString SHUNXU_IMAGE_PATH = ":/images/icon/shunxu_normal.png";
+const QString SHUNXU_HOVER_IMAGE_PATH = ":/images/icon/shunxu_hover.png";
+const QString SHUNXU_PRESSED_IMAGE_PATH = ":/images/icon/shunxu_pressed.png";
 
 const qint32 BUTTON_WIDTH64 = 64;       //各种按钮大小
 const qint32 BUTTON_HEIGHT64 = 64;

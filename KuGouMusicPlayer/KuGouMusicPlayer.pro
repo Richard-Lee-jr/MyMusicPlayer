@@ -49,3 +49,33 @@ RESOURCES += \
     res.qrc
 
 
+
+# 平台信息
+win32:contains(QT_ARCH, i386) {
+    PLATFORM = Windows
+    ARCHITECTURE = x86
+}
+
+win32:contains(QT_ARCH, x86_64) {
+    PLATFORM = Windows
+    ARCHITECTURE = x64
+}
+
+unix:!macx:contains(QT_ARCH, x86_64) {
+    PLATFORM = Linux
+    ARCHITECTURE = x64
+}
+
+unix:!macx:contains(QT_ARCH, arm64) {
+    PLATFORM = Linux
+    ARCHITECTURE = aarch64
+}
+
+unix:!macx:contains(QT_ARCH, aarch64) {
+    PLATFORM = Linux
+    ARCHITECTURE = aarch64
+}
+
+DESTDIR = $$sprintf($$PWD/../Output/bin_%1_%2_Qt%3, $$PLATFORM, $$ARCHITECTURE, $$QT_VERSION)
+
+

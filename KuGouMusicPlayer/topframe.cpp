@@ -1,8 +1,13 @@
 ﻿#include "topframe.h"
 #include <QFile>
+#include <QDir>
+#include <QFileInfo>
+#include <QFileInfoList>
 #include <QTextStream>
 #include <QTextCursor>
 #include <QTextBlock>
+#include <QDebug>
+#include <QLabel>
 
 #include "mlyricitem.h"
 
@@ -46,64 +51,16 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
     //左侧框架里的控件
     //歌词控件
-    lyrics = new QListWidget(lyricFrame);
-    lyrics->setFixedSize(600, 660);
-    lyrics->setFont(f);
-
-    lyrics->setStyleSheet(sliderStyle);
-    lyrics->style()->polish(lyrics->verticalScrollBar());
-
-
-//    QFile file("../KuGouMusicPlayer/lyrics/周杰伦-爷爷泡的茶.lrc");         //D:/QtApplication/MyMusicPlayer/MyMusicPlayer/KuGouMusicPlayer/lyrics/将故事写成我们.txt
-//    if ( !file.open(QFile::ReadOnly) )
-//    {
-//        qDebug() << "Failed to open lyrics!";
-//    }
-//    else
-//    {
-//        QTextStream txtStm(&file);
-//        txtStm.setCodec("UTF-8");
-
-
-//        while (!txtStm.atEnd())
-//        {
-//            QString qsLine = txtStm.readLine();
-
-//            if (qsLine.isEmpty())
-//            {
-//                continue;
-//            }
-
-//            QStringList list = qsLine.split(']');
-//            QString time,content;
-//            time = list.at(0);
-//            time = time.right(time.length()-1);
-//            content = list.at(1);
-//            content = content.left(content.length());
-//            int l = time.indexOf(':');
-//            int r = time.lastIndexOf('.');
-//            QString min = time.left(l);
-//            QString sec = time.mid(l+1,r-l-1);
-//            QString ms = time.right(time.length()-r-1);
-//            int t = min.toInt()*60*1000+sec.toInt()*1000+ms.toInt();
-//            lyricMap.insert(t,content);
-
-//            qDebug() << "time: " << t << ", content: " << content;
-//            MLyricItem* lyricLine = new MLyricItem(content);
-//            lyrics->addItem(lyricLine);
-//        }
-//        file.close();
-//    }
-
-//    lyrics->setCurrentRow(40);
-//    QListWidgetItem * curItem = lyrics->currentItem();
-//    lyrics->scrollToItem(curItem, QAbstractItemView::PositionAtCenter);
-
+    //lyrics = new QListWidget(lyricFrame);
+    //lyrics->setFixedSize(600, 660);
+    //lyrics->setFont(f);
+    //lyrics->setStyleSheet(sliderStyle);
+    //lyrics->style()->polish(lyrics->verticalScrollBar());
 
     //右侧框架
     listFrame = new QFrame(this);
     //右侧框架需要固定尺寸
-    listFrame->setFixedSize(300, 660);
+    listFrame->setFixedWidth(300);
 
     //右侧框架垂直布局
     listVlayout = new QVBoxLayout(listFrame);
@@ -144,9 +101,9 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
 
 /********************下面将控件添加到对应布局中区*****************************/
     //添加到歌词框架布局中去
-    lyricHlayout->addStretch(1);
-    lyricHlayout->addWidget(lyrics);
-    lyricHlayout->addStretch(1);
+    //lyricHlayout->addStretch(1);
+    //lyricHlayout->addWidget(lyrics);
+    //lyricHlayout->addStretch(1);
 
 
     //添加到右侧框架上半部分水平布局
@@ -194,6 +151,7 @@ TopFrame::TopFrame(QWidget *parent) : QFrame(parent)
     //点击del按钮，清空歌曲列表，同时清空bottomFrame中的歌单mdPlayList
     connect(del, &QPushButton::clicked, [&]{
         songList->clear();
+        clearLyricFrameWidget();
         emit TopFrame::delClickedSignal();
     });
 
@@ -252,6 +210,7 @@ void TopFrame::getItemDoubleClicked(QListWidgetItem *item)
     //获得该行内容
     QString text = item->text();
     qDebug() << "双击行内容：" << text;
+    updateLyricFrame(text);
     emit TopFrame::itemDoubleclickedSignal(index, text);
 }
 
@@ -306,4 +265,164 @@ void TopFrame::slotUpdateLyric(qint64 position)
 //        lyrics->toPlainText();
 //    }
 
+}
+
+void TopFrame::updateLyricFrame(const QString& name)
+{
+    qDebug() << "TopFrame::updateLyricFrame--name: " << name;
+    QString qsFullPath;
+
+    //先清空歌词布局中所有控件
+    clearLyricFrameWidget();
+
+    QFont font("FangSong", 20);
+
+    //歌词目录固定为./lyrics
+
+    //判断歌词目录是否存在，不存在则创建
+    QDir dir("./");
+    if (!dir.exists("lyrics"))
+    {
+        qDebug() << "./lyrics dir is not exists, create it.";
+        qDebug() << "mkdir ret: " << dir.mkdir("lyrics");
+    }
+    else
+    {
+        qDebug() << "./lyrics is exists.";
+    }
+
+    //遍历歌词目录中文件，查找以name为名文件是否存在
+    qDebug() << "cd dir lyrics result: " << dir.cd("./lyrics");
+
+    QStringList qsListFilters;
+    qsListFilters << "*.lrc";
+
+    QFileInfoList fileInfoList = dir.entryInfoList(qsListFilters, QDir::Files);
+    qDebug() << "fileInfoList count: " << fileInfoList.count();
+    if (fileInfoList.isEmpty())
+    {
+        qDebug() << "no more lyrics!";
+        goto NoLyric;
+    }
+
+
+    for (QFileInfo lyric : fileInfoList)
+    {
+        QString qsBaseName = lyric.baseName();
+        qDebug() << "base name: " << qsBaseName;
+
+        if (qsBaseName.compare(name, Qt::CaseInsensitive) == 0)
+        {
+            qDebug() << "match successfully!";
+            qsFullPath = lyric.filePath();
+        }
+    }
+
+    //存在则加载，不存在则使用QLabel填充
+    if (qsFullPath.isEmpty())
+    {
+        qDebug() << "match failed!";
+        goto NoLyric;
+
+    }
+    else
+    {
+        //QString qsFullPath = dir.path() + "/" + name;
+        qDebug() << "match full path: " << qsFullPath;
+        if ( !loadLyric(qsFullPath) )
+        {
+            goto NoLyric;
+        }
+        else
+        {
+            //lyricMap
+            QListWidget* lyricWidget = new QListWidget(lyricFrame);
+            lyricWidget->setFixedSize(600, 660);
+            lyricWidget->setFont(font);
+            lyricWidget->setStyleSheet(sliderStyle);
+            lyricWidget->style()->polish(lyricWidget->horizontalScrollBar());
+            lyricWidget->style()->polish(lyricWidget->verticalScrollBar());
+
+            for (QMap<int, QString>::iterator it = lyricMap.begin(); it != lyricMap.end(); it++)
+            {
+                MLyricItem* lyricItem = new MLyricItem(it.value());
+                //lyricItem->setFont(QFont("FangSong", 20));
+                lyricWidget->addItem(lyricItem);
+            }
+
+            lyricHlayout->addStretch(1);
+            lyricHlayout->addWidget(lyricWidget);
+            lyricHlayout->addStretch(1);
+
+            return;
+        }
+    }
+
+
+ NoLyric:
+    QLabel* lyricLabel = new QLabel(lyricFrame);
+    lyricLabel->setText(tr("暂无歌词"));
+    lyricLabel->setFont(font);
+    lyricHlayout->addStretch(1);
+    lyricHlayout->addWidget(lyricLabel);
+    lyricHlayout->addStretch(1);
+    return;
+}
+
+bool TopFrame::loadLyric(const QString& fullPath)
+{
+    qDebug() << "TopFrame::loadLyric--full path: " << fullPath;
+    QFile file(fullPath);
+    if ( !file.open(QFile::ReadOnly) )
+    {
+        qDebug() << "Failed to open lyrics!";
+        return false;
+    }
+    else
+    {
+        lyricMap.clear();
+        curPos = 0;
+        QTextStream txtStm(&file);
+        txtStm.setCodec("UTF-8");
+
+        while (!txtStm.atEnd())
+        {
+            QString qsLine = txtStm.readLine();
+
+            if (qsLine.isEmpty())
+            {
+                continue;
+            }
+
+            QStringList list = qsLine.split(']');
+            QString time,content;
+            time = list.at(0);
+            time = time.right(time.length()-1);
+            content = list.at(1);
+            content = content.left(content.length());
+            int l = time.indexOf(':');
+            int r = time.lastIndexOf('.');
+            QString min = time.left(l);
+            QString sec = time.mid(l+1,r-l-1);
+            QString ms = time.right(time.length()-r-1);
+            int t = min.toInt()*60*1000+sec.toInt()*1000+ms.toInt();
+            lyricMap.insert(t,content);
+
+            qDebug() << "time: " << t << ", content: " << content;
+        }
+        file.close();
+    }
+
+    return true;
+}
+
+void TopFrame::clearLyricFrameWidget()
+{
+    QLayoutItem* child = nullptr;
+    while ( (child = lyricHlayout->takeAt(0)) != nullptr )
+    {
+        qDebug() << "delete lyricHlayout child.";
+        delete child->widget(); // delete the widget
+        delete child;   // delete the layout item
+    }
 }

@@ -27,6 +27,10 @@ class TopFrame : public QFrame
 public:
     explicit TopFrame(QWidget *parent = nullptr);
 
+    void updateLyricFrame(const QString& name);
+    void clearLyricFrameWidget();
+    bool loadLyric(const QString& name);
+
 protected:
     //重新绘图事件
     //void paintEvent(QPaintEvent *);
@@ -87,7 +91,7 @@ private:
 
     //左侧框架里的控件
     //歌词控件
-    QListWidget* lyrics;
+    //QListWidget* lyrics;
 
 
     //右侧框架里的控件
