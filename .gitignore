@@ -54,3 +54,5 @@ compile_commands.json
 *_qmlcache.qrc
 mp3
 lyrics
+Output
+build
