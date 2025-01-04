@@ -13,9 +13,9 @@ MainWidget::MainWidget(QWidget *parent)
     setWindowIcon(QIcon(MAINWIDGET_ICON));
 
     //设置主窗口背景
-    QPalette pal(palette());
-    pal.setColor(QPalette::Background, QColor(161, 251, 142, 200));
-    setPalette(pal);
+    //QPalette pal(palette());
+    //pal.setColor(QPalette::Background, QColor(161, 251, 142, 200));
+    //setPalette(pal);
 
     topFrame = new TopFrame(this);
     btmFrame = new BottomFrame(this);
@@ -70,13 +70,13 @@ MainWidget::~MainWidget()
 void MainWidget::paintEvent(QPaintEvent *event)
 {
     //初始化画家并指定绘图设备
-    //QPainter painter(this);
-    //QImage Image;
-    //Image.load(MAINWIDGET_BACKGROUND1);
-    //QPixmap pixmap = QPixmap::fromImage(Image);
+    QPainter painter(this);
+    QImage Image;
+    Image.load(MAINWIDGET_BACKGROUND1);
+    QPixmap pixmap = QPixmap::fromImage(Image);
 
-    //QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
     //QPixmap fitpixmap = pixmap.scaled(this->width(), this->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
-    //painter.drawPixmap(0, 0, fitpixmap);
+    painter.drawPixmap(0, 0, fitpixmap);
 
 }
