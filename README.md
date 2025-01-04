@@ -13,3 +13,6 @@
 2. 手动安装LavFilter/LAVFilters-0.77.2-Installer.exe
 
 3. Qt Creator打开KuGouMusicPlayer.pro运行
+
+# 补充
+大学自学Qt时开发，现优化了下目录结构，补充构建说明
